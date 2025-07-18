@@ -57,7 +57,7 @@ const Sidebar = ({ isOpen = true, onClose = () => {} }) => {
       icon: Bell,
       label: "Notifications",
       subtitle: "Check what's new",
-      path: "/Notifications",
+      path: "/usernotifications",
       color: "from-purple-500 to-pink-600",
     },
     {

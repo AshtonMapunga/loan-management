@@ -1,7 +1,7 @@
 // notificationService.ts
 import axios from "axios";
 
-const BASE_URL = "https://loan-backend-qnj0.onrender.com/api/v1/adminnotification_route";
+const BASE_URL = "https://loan-backend-qnj0.onrender.com/api/v1/notification_route";
 
 /**
  * Service for handling notification-related API requests
@@ -18,6 +18,7 @@ const NotificationService = {
           'Content-Type': 'application/json'
         },
       });
+      console.log (response.data)
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

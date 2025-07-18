@@ -13,6 +13,8 @@ import ChatInterface from "./pages/Admin_Pages/Chat";
 import CollateralManagement from "./pages/Admin_Pages/collaterals";
 import AdminNotifications from "./pages/Admin_Pages/adminNotifications";
 import Notification from "./pages/Admin_Pages/notification";
+
+
 //user imports
 
 import UserDashboard from "./pages/User_Pages/Dashboard";
@@ -26,9 +28,9 @@ import Landingpage from "./pages/User_Pages/landing page";
 import PaymentManagement from "./pages/Admin_Pages/payment_management";
 import Chart from "./pages/User_Pages/Chart";
 import CustomerPage from "./pages/User_Pages/Customer";
-
-import Notifications from "./pages/User_Pages/Notifications";
 import Logout from "./pages/User_Pages/logout";
+import NotificationsPage from "./pages/User_Pages/Notifications"; 
+
 function App() {
   return (
     <Router>
@@ -65,7 +67,7 @@ function App() {
         <Route path="/chart" element={<Chart />} />
         <Route path="/account" element={<Account />} />
         <Route path="/Logout" element={<Logout />} />
-        <Route path="/Notifications" element={<Notifications />} />
+        <Route path="/usernotifications" element={<NotificationsPage />} />
         <Route path="/customer" element={<CustomerPage />} />
 
         <Route path="/*" element={<ComingSoonPage />} />

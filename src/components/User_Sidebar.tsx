@@ -39,13 +39,7 @@ const Sidebar = ({ isOpen = true, onClose = () => {} }) => {
       path: "/payment",
       color: "from-orange-500 to-red-600",
     },
-    {
-      icon: User,
-      label: "Chart",
-      subtitle: "chart",
-      path: "/chart",
-      color: "from-orange-500 to-pink-600",
-    },
+   
     {
       icon: User,
       label: "My Customers",
@@ -74,12 +68,7 @@ const Sidebar = ({ isOpen = true, onClose = () => {} }) => {
       path: "/chart",
       color: "from-blue-500 to-purple-600",
     },
-    {
-      icon: Users,
-      label: "Customers",
-      path: "/Custormer",
-      color: "from-green-500 to-blue-600",
-    },
+   
     {
       icon: Lock,
       label: "Logout",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Menu,
   Search,
@@ -15,6 +15,7 @@ import {
   Calendar,
 } from "lucide-react";
 import Sidebar from "../../components/User_Sidebar";
+import UserService from "../../services/admin_Services/user_Service";// Import your UserService
 
 // Mock NotificationBell component - replace with your actual import
 const NotificationBell = () => (
@@ -23,118 +24,70 @@ const NotificationBell = () => (
   </div>
 );
 
-// Sample customer data
-const sampleCustomers = [
-  {
-    _id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phoneNumber: "+1234567890",
-    address: "123 Main St, New York, NY 10001",
-    role: "customer",
-    profilePicture: "",
-    createdAt: "2024-01-15T10:30:00Z",
-    updatedAt: "2024-01-15T10:30:00Z",
-  },
-  {
-    _id: "2",
-    firstName: "Jane",
-    lastName: "Smith",
-    email: "jane.smith@example.com",
-    phoneNumber: "+1234567891",
-    address: "456 Oak Ave, Los Angeles, CA 90210",
-    role: "customer",
-    profilePicture: "",
-    createdAt: "2024-01-16T14:20:00Z",
-    updatedAt: "2024-01-16T14:20:00Z",
-  },
-  {
-    _id: "3",
-    firstName: "Michael",
-    lastName: "Johnson",
-    email: "michael.johnson@example.com",
-    phoneNumber: "+1234567892",
-    address: "789 Pine Rd, Chicago, IL 60601",
-    role: "customer",
-    profilePicture: "",
-    createdAt: "2024-01-17T09:15:00Z",
-    updatedAt: "2024-01-17T09:15:00Z",
-  },
-  {
-    _id: "4",
-    firstName: "Emily",
-    lastName: "Brown",
-    email: "emily.brown@example.com",
-    phoneNumber: "+1234567893",
-    address: "321 Elm St, Houston, TX 77001",
-    role: "customer",
-    profilePicture: "",
-    createdAt: "2024-01-18T16:45:00Z",
-    updatedAt: "2024-01-18T16:45:00Z",
-  },
-  {
-    _id: "5",
-    firstName: "David",
-    lastName: "Wilson",
-    email: "david.wilson@example.com",
-    phoneNumber: "+1234567894",
-    address: "654 Maple Dr, Phoenix, AZ 85001",
-    role: "customer",
-    profilePicture: "",
-    createdAt: "2024-01-19T11:30:00Z",
-    updatedAt: "2024-01-19T11:30:00Z",
-  },
-];
-
 const CustomerPage = () => {
   const userName = "Admin User"; // Replace with localStorage.getItem("userName")
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [customers, setCustomers] = useState(sampleCustomers);
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
 
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        setLoading(true);
+        const response = await UserService.getAllUsers();
+        setCustomers(response.data); // Adjust based on your API response structure
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch customers");
+        setLoading(false);
+        console.error("Error fetching customers:", err);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
+
   const filteredCustomers = customers.filter(
     (customer) =>
-      customer.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.phoneNumber.includes(searchTerm)
+      customer.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      customer.phoneNumber?.includes(searchTerm)
   );
 
-  const handleView = (customer: {
-    _id?: string;
-    firstName: any;
-    lastName: any;
-    email?: string;
-    phoneNumber?: string;
-    address?: string;
-    role?: string;
-    profilePicture?: string;
-    createdAt?: string;
-    updatedAt?: string;
-  }) => {
-    alert(`Viewing customer: ${customer.firstName} ${customer.lastName}`);
+  const handleView = async (customerId: string) => {
+    try {
+      const response = await UserService.getUserById(customerId);
+      alert(`Viewing customer: ${response.data.firstName} ${response.data.lastName}`);
+    } catch (err) {
+      console.error("Error viewing customer:", err);
+      alert("Failed to view customer details");
+    }
   };
 
-  const handleEdit = (customer: {
-    _id?: string;
-    firstName: any;
-    lastName: any;
-    email?: string;
-    phoneNumber?: string;
-    address?: string;
-    role?: string;
-    profilePicture?: string;
-    createdAt?: string;
-    updatedAt?: string;
-  }) => {
-    alert(`Editing customer: ${customer.firstName} ${customer.lastName}`);
+  const handleEdit = async (customerId: string) => {
+    try {
+      const response = await UserService.getUserById(customerId);
+      alert(`Editing customer: ${response.data.firstName} ${response.data.lastName}`);
+      // You would typically open a modal with the customer data here
+    } catch (err) {
+      console.error("Error editing customer:", err);
+      alert("Failed to edit customer");
+    }
   };
 
-  const handleDelete = (customerId: string) => {
+  const handleDelete = async (customerId: string) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
-      setCustomers(customers.filter((customer) => customer._id !== customerId));
+      try {
+        await UserService.deleteUser(customerId);
+        setCustomers(customers.filter((customer) => customer._id !== customerId));
+      } catch (err) {
+        console.error("Error deleting customer:", err);
+        alert("Failed to delete customer");
+      }
     }
   };
 
@@ -143,8 +96,52 @@ const CustomerPage = () => {
   };
 
   const getInitials = (firstName: string, lastName: string) => {
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+    return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
   };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-lg text-gray-700">Loading customers...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 items-center justify-center">
+        <div className="text-center p-6 bg-white/80 rounded-xl shadow-lg max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-8 w-8 text-red-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Error Loading Data</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg hover:from-orange-600 hover:to-red-600 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
@@ -272,7 +269,14 @@ const CustomerPage = () => {
                     <p className="text-sm text-gray-600 font-medium">
                       New This Month
                     </p>
-                    <p className="text-2xl font-bold text-gray-900">3</p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {customers.filter(customer => {
+                        const joinDate = new Date(customer.createdAt);
+                        const now = new Date();
+                        return joinDate.getMonth() === now.getMonth() && 
+                               joinDate.getFullYear() === now.getFullYear();
+                      }).length}
+                    </p>
                   </div>
                   <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
                     <UserPlus className="w-6 h-6 text-white" />
@@ -350,32 +354,32 @@ const CustomerPage = () => {
                         <div className="flex items-center space-x-2 text-sm text-gray-600">
                           <MapPin className="w-4 h-4 text-orange-500" />
                           <span className="max-w-xs truncate">
-                            {customer.address}
+                            {customer.address || 'N/A'}
                           </span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center space-x-2 text-sm text-gray-600">
                           <Calendar className="w-4 h-4 text-orange-500" />
-                          <span>{formatDate(customer.createdAt)}</span>
+                          <span>{customer.createdAt ? formatDate(customer.createdAt) : 'N/A'}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4">
                         <span className="inline-flex px-3 py-1 text-xs font-medium bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 rounded-full">
-                          {customer.role}
+                          {customer.role || 'customer'}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center space-x-2">
                           <button
-                            onClick={() => handleView(customer)}
+                            onClick={() => handleView(customer._id)}
                             className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                             title="View Customer"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => handleEdit(customer)}
+                            onClick={() => handleEdit(customer._id)}
                             className="p-2 text-orange-600 hover:text-orange-800 hover:bg-orange-50 rounded-lg transition-colors duration-200"
                             title="Edit Customer"
                           >
@@ -401,7 +405,7 @@ const CustomerPage = () => {
                 <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                 <p className="text-gray-500 text-lg">No customers found</p>
                 <p className="text-gray-400 text-sm">
-                  Try adjusting your search criteria
+                  {searchTerm ? "Try adjusting your search criteria" : "No customers available"}
                 </p>
               </div>
             )}

@@ -17,6 +17,7 @@ import {
   serverTimestamp 
 } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import EnhancedLoadingSpinner from '../../components/chatspinner';
 
 // Firebase configuration (replace with your config)
 const firebaseConfig = {
@@ -27,6 +28,8 @@ const firebaseConfig = {
   messagingSenderId: "602070514808",
   appId: "1:602070514808:web:d9156bd1cd73fec6d6418d",
 };
+
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -68,6 +71,7 @@ const ChatInterface = () => {
     email: localStorage.getItem('userEmail') || ''
   });
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -471,11 +475,14 @@ const ChatInterface = () => {
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+      {/* Full-page spinner for initial load */}
+      {<EnhancedLoadingSpinner />}
       {/* Sidebar Component - Always visible */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
+        
         {/* Header - Simplified version */}
         <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-orange-200/50 px-6 py-4 relative">
           <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-red-500/5"></div>

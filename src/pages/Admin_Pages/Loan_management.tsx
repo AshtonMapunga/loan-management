@@ -285,6 +285,68 @@ const LoanManagement = () => {
     ).length;
   };
 
+  // Skeleton Loader Component
+  const SkeletonLoader = () => (
+    <div className="space-y-6 animate-pulse">
+      {/* Header Skeleton */}
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="h-8 bg-orange-200/50 rounded-xl w-64 mb-2"></div>
+          <div className="h-4 bg-orange-200/30 rounded-xl w-80"></div>
+        </div>
+        <div className="flex space-x-3">
+          <div className="h-10 bg-orange-200/50 rounded-xl w-24"></div>
+          <div className="h-10 bg-orange-500/50 rounded-xl w-36"></div>
+        </div>
+      </div>
+
+      {/* Stats Cards Skeleton */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[1, 2, 3, 4].map((i) => (
+          <div key={i} className="bg-white/70 rounded-2xl p-6 shadow-lg border border-white/50">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="h-4 bg-orange-200/30 rounded-xl w-24 mb-2"></div>
+                <div className="h-8 bg-orange-200/50 rounded-xl w-16"></div>
+              </div>
+              <div className="p-3 bg-orange-100/30 rounded-xl">
+                <div className="w-6 h-6 bg-orange-200/50 rounded-lg"></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters Skeleton */}
+      <div className="bg-white/70 rounded-2xl p-6 shadow-lg border border-white/50">
+        <div className="h-10 bg-orange-200/30 rounded-xl w-full"></div>
+      </div>
+
+      {/* Table Skeleton */}
+      <div className="bg-white/70 rounded-2xl shadow-lg border border-white/50 overflow-hidden">
+        <div className="p-6">
+          <div className="h-6 bg-orange-200/30 rounded-xl w-full mb-4"></div>
+          <div className="space-y-4">
+            {[1, 2, 3, 4, 5].map((row) => (
+              <div key={row} className="flex items-center space-x-4">
+                <div className="h-12 bg-orange-200/30 rounded-xl flex-1"></div>
+                <div className="h-12 bg-orange-200/30 rounded-xl flex-1"></div>
+                <div className="h-12 bg-orange-200/30 rounded-xl flex-1"></div>
+                <div className="h-12 bg-orange-200/30 rounded-xl w-24"></div>
+                <div className="h-12 bg-orange-200/30 rounded-xl w-32"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Pagination Skeleton */}
+      <div className="bg-white/70 rounded-2xl p-4 shadow-lg border border-white/50">
+        <div className="h-6 bg-orange-200/30 rounded-xl w-full"></div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
       {/* Sidebar Component */}
@@ -400,315 +462,305 @@ const LoanManagement = () => {
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Page Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-orange-800 mb-2">
-                Loan Management
-              </h1>
-              <p className="text-orange-600">
-                Manage loan applications, approve or reject requests, and handle
-                documentation
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button 
-                onClick={() => setShowExportModal(true)}
-                className="px-4 py-2 bg-orange-100/60 text-orange-700 rounded-xl font-medium hover:bg-orange-200/60 transition-all duration-200 flex items-center space-x-2"
-              >
-                <Download className="w-4 h-4" />
-                <span>Export</span>
-              </button>
-              <button 
-                onClick={() => setShowNewAppModal(true)}
-                className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center space-x-2"
-              >
-                <Plus className="w-4 h-4" />
-                <span>New Application</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4">
-              <div className="flex items-center">
-                <XCircle className="w-5 h-5 mr-2" />
-                <span>Error: {error}</span>
-              </div>
-            </div>
-          )}
-
-          {/* Loading State */}
-          {loading && (
-            <div className="flex items-center justify-center h-64">
-              <div className="text-orange-600 flex items-center space-x-2">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-orange-600"></div>
-                <span>Loading loan applications...</span>
-              </div>
-            </div>
-          )}
-
-          {/* Stats Cards */}
-          {!loading && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-orange-600 font-medium">
-                      Total Applications
-                    </p>
-                    <p className="text-2xl font-bold text-orange-800">
-                      {loanApplications.length}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-orange-100 rounded-xl">
-                    <FileText className="w-6 h-6 text-orange-600" />
-                  </div>
+          {loading ? (
+            <SkeletonLoader />
+          ) : (
+            <>
+              {/* Page Header */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-orange-800 mb-2">
+                    Loan Management
+                  </h1>
+                  <p className="text-orange-600">
+                    Manage loan applications, approve or reject requests, and handle
+                    documentation
+                  </p>
                 </div>
-              </div>
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-yellow-600 font-medium">
-                      Pending Review
-                    </p>
-                    <p className="text-2xl font-bold text-yellow-800">
-                      {getPendingReviewCount()}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-yellow-100 rounded-xl">
-                    <Clock className="w-6 h-6 text-yellow-600" />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-green-600 font-medium">
-                      Approved
-                    </p>
-                    <p className="text-2xl font-bold text-green-800">
-                      {getApprovedCount()}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-green-100 rounded-xl">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-red-600 font-medium">Rejected</p>
-                    <p className="text-2xl font-bold text-red-800">
-                      {getRejectedCount()}
-                    </p>
-                  </div>
-                  <div className="p-3 bg-red-100 rounded-xl">
-                    <XCircle className="w-6 h-6 text-red-600" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Filters and Controls */}
-          {!loading && (
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <Filter className="w-4 h-4 text-orange-600" />
-                    <span className="text-sm font-medium text-orange-700">
-                      Filter by:
-                    </span>
-                  </div>
-                  <select
-                    value={selectedFilter}
-                    onChange={(e) => setSelectedFilter(e.target.value)}
-                    className="px-3 py-2 bg-orange-100/50 border border-orange-200/50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50"
+                <div className="flex items-center space-x-3">
+                  <button 
+                    onClick={() => setShowExportModal(true)}
+                    className="px-4 py-2 bg-orange-100/60 text-orange-700 rounded-xl font-medium hover:bg-orange-200/60 transition-all duration-200 flex items-center space-x-2"
                   >
-                    {filterOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="text-sm text-orange-600">
-                  Showing {filteredApplications.length} of{" "}
-                  {loanApplications.length} applications
+                    <Download className="w-4 h-4" />
+                    <span>Export</span>
+                  </button>
+                  <button 
+                    onClick={() => setShowNewAppModal(true)}
+                    className="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-xl font-medium hover:from-orange-600 hover:to-red-600 transition-all duration-200 flex items-center space-x-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>New Application</span>
+                  </button>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* Applications Table */}
-          {!loading && (
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-gradient-to-r from-orange-100/50 to-red-100/50">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
-                        Application
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
-                        Applicant
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
-                        Loan Details
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
-                        Status
-                      </th>
-                      <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-orange-200/30">
-                    {filteredApplications.length === 0 ? (
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-4">
+                  <div className="flex items-center">
+                    <XCircle className="w-5 h-5 mr-2" />
+                    <span>Error: {error}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-orange-600 font-medium">
+                        Total Applications
+                      </p>
+                      <p className="text-2xl font-bold text-orange-800">
+                        {loanApplications.length}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-orange-100 rounded-xl">
+                      <FileText className="w-6 h-6 text-orange-600" />
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-yellow-600 font-medium">
+                        Pending Review
+                      </p>
+                      <p className="text-2xl font-bold text-yellow-800">
+                        {getPendingReviewCount()}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-yellow-100 rounded-xl">
+                      <Clock className="w-6 h-6 text-yellow-600" />
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-green-600 font-medium">
+                        Approved
+                      </p>
+                      <p className="text-2xl font-bold text-green-800">
+                        {getApprovedCount()}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-green-100 rounded-xl">
+                      <CheckCircle className="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-red-600 font-medium">Rejected</p>
+                      <p className="text-2xl font-bold text-red-800">
+                        {getRejectedCount()}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-red-100 rounded-xl">
+                      <XCircle className="w-6 h-6 text-red-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filters and Controls */}
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <Filter className="w-4 h-4 text-orange-600" />
+                      <span className="text-sm font-medium text-orange-700">
+                        Filter by:
+                      </span>
+                    </div>
+                    <select
+                      value={selectedFilter}
+                      onChange={(e) => setSelectedFilter(e.target.value)}
+                      className="px-3 py-2 bg-orange-100/50 border border-orange-200/50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/50"
+                    >
+                      {filterOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="text-sm text-orange-600">
+                    Showing {filteredApplications.length} of{" "}
+                    {loanApplications.length} applications
+                  </div>
+                </div>
+              </div>
+
+              {/* Applications Table */}
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gradient-to-r from-orange-100/50 to-red-100/50">
                       <tr>
-                        <td
-                          colSpan={6}
-                          className="px-6 py-8 text-center text-orange-600"
-                        >
-                          {error
-                            ? "Unable to load applications"
-                            : "No loan applications found"}
-                        </td>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
+                          Application
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
+                          Applicant
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
+                          Loan Details
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
+                          Status
+                        </th>
+                        <th className="px-6 py-4 text-left text-xs font-medium text-orange-700 uppercase tracking-wider">
+                          Actions
+                        </th>
                       </tr>
-                    ) : (
-                      filteredApplications.map((application) => (
-                        <tr
-                          key={application.id}
-                          className="hover:bg-orange-50/30 transition-colors duration-200"
-                        >
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center mr-3">
-                                <span className="text-white font-bold text-sm">
-                                  {application.id.slice(-2)}
-                                </span>
-                              </div>
-                              <div>
-                                <div className="text-sm font-medium text-orange-800">
-                                  {application.id}
-                                </div>
-                                <div className="text-xs text-orange-600">
-                                  {application.appliedDate}
-                                </div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div>
-                              <div className="text-sm font-medium text-orange-800">
-                                {application.applicant}
-                              </div>
-                              <div className="text-xs text-orange-600">
-                                {application.email}
-                              </div>
-                              <div className="text-xs text-orange-500">
-                                {application.phone}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div>
-                              <div className="text-sm font-medium text-orange-800">
-                                {application.loanType}
-                              </div>
-                              <div className="text-sm text-orange-600 font-semibold">
-                                {application.amount}
-                              </div>
-                              <div className="text-xs text-orange-500">
-                                Credit: {application.creditScore}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(
-                                application.status
-                              )}`}
-                            >
-                              {getStatusText(application.status)}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center space-x-2">
-                              <button
-                                onClick={() =>
-                                  handleViewDetails(application.id)
-                                }
-                                className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-100 rounded-lg transition-colors duration-200"
-                                title="View Details"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </button>
-                              {(application.status.toLowerCase() ===
-                                "pending" ||
-                                application.status.toLowerCase() ===
-                                  "under_review") && (
-                                <>
-                                  <button
-                                    onClick={() =>
-                                      handleApprove(application.id)
-                                    }
-                                    className="p-2 text-green-600 hover:text-green-700 hover:bg-green-100 rounded-lg transition-colors duration-200"
-                                    title="Approve"
-                                  >
-                                    <CheckCircle className="w-4 h-4" />
-                                  </button>
-                                  <button
-                                    onClick={() => handleReject(application.id)}
-                                    className="p-2 text-red-600 hover:text-red-700 hover:bg-red-100 rounded-lg transition-colors duration-200"
-                                    title="Reject"
-                                  >
-                                    <XCircle className="w-4 h-4" />
-                                  </button>
-                                </>
-                              )}
-                              <div className="relative">
-                                <button className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-100 rounded-lg transition-colors duration-200">
-                                  <MoreVertical className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </div>
+                    </thead>
+                    <tbody className="divide-y divide-orange-200/30">
+                      {filteredApplications.length === 0 ? (
+                        <tr>
+                          <td
+                            colSpan={6}
+                            className="px-6 py-8 text-center text-orange-600"
+                          >
+                            {error
+                              ? "Unable to load applications"
+                              : "No loan applications found"}
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      ) : (
+                        filteredApplications.map((application) => (
+                          <tr
+                            key={application.id}
+                            className="hover:bg-orange-50/30 transition-colors duration-200"
+                          >
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center">
+                                <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center mr-3">
+                                  <span className="text-white font-bold text-sm">
+                                    {application.id.slice(-2)}
+                                  </span>
+                                </div>
+                                <div>
+                                  <div className="text-sm font-medium text-orange-800">
+                                    {application.id}
+                                  </div>
+                                  <div className="text-xs text-orange-600">
+                                    {application.appliedDate}
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-orange-800">
+                                  {application.applicant}
+                                </div>
+                                <div className="text-xs text-orange-600">
+                                  {application.email}
+                                </div>
+                                <div className="text-xs text-orange-500">
+                                  {application.phone}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div>
+                                <div className="text-sm font-medium text-orange-800">
+                                  {application.loanType}
+                                </div>
+                                <div className="text-sm text-orange-600 font-semibold">
+                                  {application.amount}
+                                </div>
+                                <div className="text-xs text-orange-500">
+                                  Credit: {application.creditScore}
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span
+                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(
+                                  application.status
+                                )}`}
+                              >
+                                {getStatusText(application.status)}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <div className="flex items-center space-x-2">
+                                <button
+                                  onClick={() =>
+                                    handleViewDetails(application.id)
+                                  }
+                                  className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-100 rounded-lg transition-colors duration-200"
+                                  title="View Details"
+                                >
+                                  <Eye className="w-4 h-4" />
+                                </button>
+                                {(application.status.toLowerCase() ===
+                                  "pending" ||
+                                  application.status.toLowerCase() ===
+                                    "under_review") && (
+                                  <>
+                                    <button
+                                      onClick={() =>
+                                        handleApprove(application.id)
+                                      }
+                                      className="p-2 text-green-600 hover:text-green-700 hover:bg-green-100 rounded-lg transition-colors duration-200"
+                                      title="Approve"
+                                    >
+                                      <CheckCircle className="w-4 h-4" />
+                                    </button>
+                                    <button
+                                      onClick={() => handleReject(application.id)}
+                                      className="p-2 text-red-600 hover:text-red-700 hover:bg-red-100 rounded-lg transition-colors duration-200"
+                                      title="Reject"
+                                    >
+                                      <XCircle className="w-4 h-4" />
+                                    </button>
+                                  </>
+                                )}
+                                <div className="relative">
+                                  <button className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-100 rounded-lg transition-colors duration-200">
+                                    <MoreVertical className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          )}
 
-          {/* Pagination */}
-          {!loading && filteredApplications.length > 0 && (
-            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/50">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-orange-600">
-                  Showing 1 to {filteredApplications.length} of{" "}
-                  {filteredApplications.length} results
+              {/* Pagination */}
+              {filteredApplications.length > 0 && (
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-white/50">
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-orange-600">
+                      Showing 1 to {filteredApplications.length} of{" "}
+                      {filteredApplications.length} results
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button className="px-3 py-2 text-sm font-medium text-orange-600 bg-orange-100/50 border border-orange-200/50 rounded-lg hover:bg-orange-200/50 transition-colors duration-200">
+                        Previous
+                      </button>
+                      <button className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
+                        1
+                      </button>
+                      <button className="px-3 py-2 text-sm font-medium text-orange-600 bg-orange-100/50 border border-orange-200/50 rounded-lg hover:bg-orange-200/50 transition-colors duration-200">
+                        Next
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <button className="px-3 py-2 text-sm font-medium text-orange-600 bg-orange-100/50 border border-orange-200/50 rounded-lg hover:bg-orange-200/50 transition-colors duration-200">
-                    Previous
-                  </button>
-                  <button className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
-                    1
-                  </button>
-                  <button className="px-3 py-2 text-sm font-medium text-orange-600 bg-orange-100/50 border border-orange-200/50 rounded-lg hover:bg-orange-200/50 transition-colors duration-200">
-                    Next
-                  </button>
-                </div>
-              </div>
-            </div>
+              )}
+            </>
           )}
         </main>
       </div>

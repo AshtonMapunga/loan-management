@@ -25,6 +25,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NotificationService from "../../services/admin_Services/notification_service";
 import UserService from "../../services/admin_Services/user_Service";
+import EnhancedLoadingSpinner from '../../components/chatspinner';
+
 
 
 
@@ -834,6 +836,7 @@ const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('notifications');
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+   const [isLoading, setIsLoading] = useState(true);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [showViewAll, setShowViewAll] = useState(false);
   const [, setSelectedUser] = useState<User | null>(null);
@@ -873,6 +876,8 @@ useEffect(() => {
 
   fetchUsers();
 }, []);
+   
+    
 
   const handleSendNotification = async (userIds: string[], message: string, type: 'info' | 'alert' | 'message') => {
   if (userIds.length === 0) {
@@ -901,7 +906,7 @@ useEffect(() => {
       notificationType: type,
       read: false
     }));
-
+  
     // Update state and save to local storage
     setNotifications(prev => {
       const updatedNotifications = [...newNotifications, ...prev];
@@ -1281,6 +1286,7 @@ useEffect(() => {
         </div>
       )}
     </div>
+    
     
   );
 };

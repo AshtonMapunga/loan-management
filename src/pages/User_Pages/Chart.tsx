@@ -3,6 +3,8 @@ import { Search, Send, Paperclip, Smile, Mic, Play, Pause, X, Menu, Loader2, Ima
 import EmojiPicker from 'emoji-picker-react';
 import Sidebar from "../../components/User_Sidebar";
 import AdminService from "../../services/admin_Services/admin_service";
+import EnhancedLoadingSpinner from '../../components/userspiner';
+
 
 // Firebase imports
 import { initializeApp } from 'firebase/app';
@@ -544,7 +546,10 @@ useEffect(() => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-sky-50">
+    <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
+      {/* Full-page spinner for initial load */}
+      {<EnhancedLoadingSpinner />}
+      {/* Sidebar Component - Always visible */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">

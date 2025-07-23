@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import Sidebar from "../../components/Sidebar";
 import LoanService from "../../services/admin_Services/loan_Service";
+import FullPageSkeleton from  "../../components/skeletonloading"; 
+
 
 // Define proper types
 
@@ -148,6 +150,8 @@ const LoanTracking = () => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+
+    
   }, [showNotifications, showExportOptions]);
 
   const transformLoanData = (backendLoan: Loan) => {
@@ -168,7 +172,8 @@ const LoanTracking = () => {
         (today.getTime() - dueDate.getTime()) / (1000 * 3600 * 24)
       );
     };
-
+     
+    
     const totalPayments = backendLoan.paymentSchedule.length;
     const completedPayments = backendLoan.paymentSchedule.filter(
       (payment) => payment.status === "paid"
@@ -205,6 +210,11 @@ const LoanTracking = () => {
       riskLevel: getRiskLevel(),
     };
   };
+  
+  if (loading) {
+    return <FullPageSkeleton  />;
+  }
+
 
   const transformedLoans = loans.map(transformLoanData);
   const filteredLoans = transformedLoans.filter((loan) => {
@@ -309,10 +319,11 @@ const LoanTracking = () => {
     alert(`Exporting data in ${format} format...`);
   };
 
-  return (
-    <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 relative">
-      {/* Sidebar Component */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+  // Replace your loading check with this structure:
+return (
+  <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 relative">
+    {/* Sidebar - Always visible */}
+    <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">

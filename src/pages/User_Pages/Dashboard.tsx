@@ -12,7 +12,6 @@ import {
   CheckCircle,
   Download,
   Calculator,
-  Loader2,
   Bell,
 } from "lucide-react";
 import Sidebar from "../../components/User_Sidebar";
@@ -90,15 +89,226 @@ const UserDashboard = () => {
     fetchLoans();
   }, []);
 
-  // Return early if loading or error
+  // Skeleton Loading State
   if (loading) {
     return (
       <div className="flex h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
-            <p className="text-blue-600">Loading loans...</p>
-          </div>
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
+          {/* Header Skeleton */}
+          <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-blue-200/50 px-6 py-4 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5"></div>
+            <div className="relative flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="lg:hidden mr-4 p-2 rounded-xl bg-gray-200 animate-pulse">
+                  <div className="w-5 h-5"></div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <span className="h-4 w-20 bg-gray-200 rounded animate-pulse"></span>
+                    <span className="h-4 w-4 bg-gray-200 rounded animate-pulse"></span>
+                    <span className="h-4 w-24 bg-gray-200 rounded animate-pulse"></span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <div className="relative hidden md:block">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="pl-10 pr-4 py-2 w-64 bg-gray-100/50 border border-gray-300 rounded-xl h-10 animate-pulse"></div>
+                </div>
+
+                <div className="relative p-2 rounded-xl bg-gray-200 animate-pulse">
+                  <div className="w-5 h-5"></div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gray-300 rounded-full animate-pulse"></div>
+                </div>
+
+                <div className="flex items-center space-x-3 pl-4 border-l border-gray-300">
+                  <div className="text-right hidden sm:block">
+                    <div className="h-4 w-16 bg-gray-200 rounded animate-pulse mb-1"></div>
+                    <div className="h-3 w-12 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="relative">
+                    <div className="w-10 h-10 bg-gray-200 rounded-xl animate-pulse"></div>
+                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-300 rounded-full animate-pulse"></div>
+                  </div>
+                  <div className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Dashboard Content Skeleton */}
+          <main className="flex-1 overflow-y-auto p-6 space-y-8">
+            {/* Loan Selection Skeleton */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+              <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-4"></div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="p-4 rounded-xl border-2 border-gray-300 bg-white/50 animate-pulse">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-6 w-16 bg-gray-200 rounded-full animate-pulse"></div>
+                    </div>
+                    <div className="h-6 w-32 bg-gray-200 rounded animate-pulse mb-1"></div>
+                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse mb-2"></div>
+                    <div className="h-4 w-36 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Loan Overview Cards Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50 animate-pulse">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-3 rounded-2xl bg-gray-200"></div>
+                    <div className="h-6 w-16 bg-gray-200 rounded-full"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                    <div className="h-8 w-32 bg-gray-200 rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Loan Progress and Details Skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Loan Progress Skeleton */}
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-white/50 animate-pulse">
+                <div className="mb-8">
+                  <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <div className="h-4 w-56 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+
+                {/* Progress Bar Skeleton */}
+                <div className="mb-8">
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-4 w-12 bg-gray-200 rounded animate-pulse"></div>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-4 animate-pulse"></div>
+                </div>
+
+                {/* Progress Stats Skeleton */}
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  {[1, 2].map((i) => (
+                    <div key={i} className="text-center p-4 bg-gray-100 rounded-xl animate-pulse">
+                      <div className="h-8 w-full bg-gray-200 rounded animate-pulse mb-2"></div>
+                      <div className="h-4 w-20 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Key Info Skeleton */}
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex justify-between items-center py-2 border-b border-gray-200">
+                      <div className="h-4 w-20 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 w-24 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Loan Details Skeleton */}
+              <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-white/50 animate-pulse">
+                <div className="mb-8">
+                  <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <div className="h-4 w-56 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    {[1, 2].map((i) => (
+                      <div key={i}>
+                        <div className="h-4 w-16 bg-gray-200 rounded animate-pulse mb-2"></div>
+                        <div className="h-6 w-32 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {[1, 2].map((i) => (
+                      <div key={i}>
+                        <div className="h-4 w-16 bg-gray-200 rounded animate-pulse mb-2"></div>
+                        <div className="h-6 w-32 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {[1, 2].map((i) => (
+                      <div key={i}>
+                        <div className="h-4 w-16 bg-gray-200 rounded animate-pulse mb-2"></div>
+                        <div className="h-6 w-32 bg-gray-200 rounded animate-pulse"></div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Action Buttons Skeleton */}
+                  <div className="flex space-x-3 pt-4">
+                    <div className="flex-1 h-12 bg-gray-200 rounded-xl animate-pulse"></div>
+                    <div className="flex-1 h-12 bg-gray-200 rounded-xl animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Schedule Skeleton */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-white/50 animate-pulse">
+              <div className="mb-8">
+                <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+                <div className="h-4 w-56 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="text-left border-b border-gray-200">
+                      {['Month', 'Due Date', 'EMI', 'Principal', 'Interest', 'Balance', 'Status'].map((header) => (
+                        <th key={header} className="pb-3">
+                          <div className="h-4 w-16 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[1, 2, 3, 4, 5].map((row) => (
+                      <tr key={row} className="border-b border-gray-100">
+                        {[1, 2, 3, 4, 5, 6, 7].map((cell) => (
+                          <td key={cell} className="py-4">
+                            <div className="h-4 w-12 bg-gray-200 rounded animate-pulse mx-auto"></div>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* EMI Calculator Skeleton */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-white/50 animate-pulse">
+              <div className="mb-8">
+                <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mb-2"></div>
+                <div className="h-4 w-56 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse mx-auto mb-4"></div>
+                  <div className="h-6 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-2"></div>
+                  <div className="h-4 w-64 bg-gray-200 rounded animate-pulse mx-auto mb-4"></div>
+                  <div className="h-12 w-36 bg-gray-200 rounded-xl animate-pulse mx-auto"></div>
+                </div>
+              </div>
+            </div>
+          </main>
         </div>
       </div>
     );
@@ -363,7 +573,7 @@ const UserDashboard = () => {
                 <Bell className="w-5 h-5 text-gray-600 group-hover:text-black" />
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center">
                   <span className="text-xs text-white font-medium">3</span>
-                </div>
+                  </div>
               </button>
 
               <NotificationBell />

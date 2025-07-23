@@ -19,6 +19,11 @@ import Sidebar from "../../components/User_Sidebar";
 import UserService from "../../services/user_Services/users_Service";
 import NotificationBell from "../../components/Notificationbelll";
 
+// Skeleton component
+const Skeleton = ({ className = "" }: { className?: string }) => (
+  <div className={`animate-pulse bg-gray-200 rounded ${className}`}></div>
+);
+
 // Type definitions matching the backend model
 interface ProfileData {
   firstName: string;
@@ -115,6 +120,9 @@ const Account = () => {
     const loadUserData = async () => {
       try {
         setLoading(true);
+        // Simulate loading delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         // Get user ID from localStorage or token
         const storedUserId = localStorage.getItem("userId");
         if (storedUserId) {
@@ -396,15 +404,205 @@ const Account = () => {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="flex h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <Loader className="w-6 h-6 animate-spin text-blue-600" />
-          <span className="text-blue-600 font-medium">Loading profile...</span>
-        </div>
+  // Skeleton Loading Component
+  const SkeletonLoader = () => (
+    <div className="flex h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
+        {/* Header Skeleton */}
+        <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-blue-200/50 px-6 py-4 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5"></div>
+          <div className="relative flex items-center justify-between">
+            <div className="flex items-center">
+              <Skeleton className="w-8 h-8 mr-4 lg:hidden" />
+              <div className="flex items-center space-x-2">
+                <Skeleton className="w-24 h-4" />
+                <Skeleton className="w-4 h-4" />
+                <Skeleton className="w-32 h-4" />
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <div className="relative hidden md:block">
+                <Skeleton className="w-64 h-8" />
+              </div>
+              <Skeleton className="w-8 h-8 rounded-full" />
+              <div className="flex items-center space-x-3 pl-4 border-l border-blue-200/50">
+                <div className="text-right hidden sm:block">
+                  <Skeleton className="w-24 h-4 mb-1" />
+                  <Skeleton className="w-20 h-3" />
+                </div>
+                <Skeleton className="w-10 h-10 rounded-xl" />
+                <Skeleton className="w-4 h-4" />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content Skeleton */}
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-6xl mx-auto space-y-8">
+            {/* Profile Header Skeleton */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 shadow-lg border border-white/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-6">
+                  <div className="relative">
+                    <Skeleton className="w-24 h-24 rounded-2xl" />
+                    <Skeleton className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl" />
+                  </div>
+                  <div>
+                    <Skeleton className="w-48 h-8 mb-2" />
+                    <Skeleton className="w-64 h-4" />
+                    <Skeleton className="w-32 h-3 mt-2" />
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Skeleton className="w-5 h-5 rounded-full" />
+                    <Skeleton className="w-24 h-4" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tab Navigation Skeleton */}
+            <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50">
+              <div className="flex border-b border-blue-200/50">
+                {[1, 2, 3].map((item) => (
+                  <Skeleton key={item} className="flex-1 h-14" />
+                ))}
+              </div>
+
+              {/* Tab Content Skeleton */}
+              <div className="p-8">
+                {/* Profile Tab Skeleton */}
+                {activeTab === "profile" && (
+                  <div className="space-y-8">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Skeleton className="w-64 h-8 mb-2" />
+                        <Skeleton className="w-96 h-4" />
+                      </div>
+                      <Skeleton className="w-40 h-10 rounded-xl" />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {[1, 2, 3, 4].map((item) => (
+                        <div key={item}>
+                          <Skeleton className="w-24 h-4 mb-2" />
+                          <Skeleton className="w-full h-12 rounded-xl" />
+                        </div>
+                      ))}
+                      <div className="md:col-span-2">
+                        <Skeleton className="w-24 h-4 mb-2" />
+                        <Skeleton className="w-full h-24 rounded-xl" />
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-4">
+                      <Skeleton className="w-24 h-10 rounded-xl" />
+                      <Skeleton className="w-40 h-10 rounded-xl" />
+                    </div>
+                  </div>
+                )}
+
+                {/* Security Tab Skeleton */}
+                {activeTab === "security" && (
+                  <div className="space-y-8">
+                    <div>
+                      <Skeleton className="w-64 h-8 mb-2" />
+                      <Skeleton className="w-96 h-4" />
+                    </div>
+
+                    <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-6">
+                      <Skeleton className="w-48 h-6 mb-4" />
+                      <div className="space-y-4">
+                        {[1, 2, 3].map((item) => (
+                          <div key={item}>
+                            <Skeleton className="w-24 h-4 mb-2" />
+                            <Skeleton className="w-full h-12 rounded-xl" />
+                          </div>
+                        ))}
+                        <Skeleton className="w-40 h-10 rounded-xl" />
+                      </div>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6">
+                      <Skeleton className="w-48 h-6 mb-4" />
+                      <div className="space-y-3">
+                        {[1, 2, 3].map((item) => (
+                          <div key={item} className="flex items-center space-x-3">
+                            <Skeleton className="w-5 h-5 rounded-full" />
+                            <Skeleton className="w-64 h-4" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Notifications Tab Skeleton */}
+                {activeTab === "notifications" && (
+                  <div className="space-y-8">
+                    <div>
+                      <Skeleton className="w-64 h-8 mb-2" />
+                      <Skeleton className="w-96 h-4" />
+                    </div>
+
+                    <div className="space-y-6">
+                      {[1, 2, 3].map((section) => (
+                        <div key={section} className="rounded-2xl p-6">
+                          <Skeleton className="w-48 h-6 mb-4" />
+                          <div className="space-y-4">
+                            {[1, 2, 3].map((item) => (
+                              <div key={item} className="flex justify-between">
+                                <div>
+                                  <Skeleton className="w-32 h-4 mb-1" />
+                                  <Skeleton className="w-48 h-3" />
+                                </div>
+                                <Skeleton className="w-11 h-6 rounded-full" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="rounded-2xl p-6">
+                      <Skeleton className="w-48 h-6 mb-4" />
+                      <Skeleton className="w-64 h-4 mb-4" />
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="rounded-xl p-4">
+                          <Skeleton className="w-32 h-4 mb-2" />
+                          <Skeleton className="w-full h-10 rounded-lg" />
+                        </div>
+                        <div className="rounded-xl p-4">
+                          <Skeleton className="w-32 h-4 mb-2" />
+                          <div className="flex space-x-2">
+                            <Skeleton className="flex-1 h-10 rounded-lg" />
+                            <Skeleton className="w-4 h-4 self-center" />
+                            <Skeleton className="flex-1 h-10 rounded-lg" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <Skeleton className="w-40 h-10 rounded-xl" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
-    );
+    </div>
+  );
+
+  if (loading) {
+    return <SkeletonLoader />;
   }
 
   return (

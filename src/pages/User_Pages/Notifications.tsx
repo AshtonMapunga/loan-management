@@ -152,12 +152,43 @@ const NotificationsPage: React.FC = () => {
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Full-page Skeleton Loader
+  const FullPageSkeleton = () => (
+    <div className="fixed inset-0 bg-white/80 backdrop-blur-sm z-40">
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        
+        <div className="space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="p-5 rounded-lg border border-gray-200 bg-white">
+              <div className="flex items-start space-x-4">
+                <div className="mt-1">
+                  <div className="w-5 h-5 bg-gray-200 rounded-full animate-pulse"></div>
+                </div>
+                <div className="flex-1 space-y-3">
+                  <div className="h-5 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                  <div className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                  <div className="h-3 bg-gray-200 rounded w-1/2 animate-pulse"></div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-blue-50 via-blue-50 to-blue-50">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
-        <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-blue-200/50 px-6 py-4 relative">
+      <div className="flex-1 flex flex-col overflow-hidden lg:ml-0 relative">
+        {/* Loading overlay */}
+        {loading && <FullPageSkeleton />}
+
+        <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-blue-200/50 px-6 py-4 relative z-10">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-blue-500/5" />
           <div className="relative flex items-center justify-between">
             <div className="flex items-center">
@@ -181,7 +212,7 @@ const NotificationsPage: React.FC = () => {
               <div className="relative" ref={dropdownRef}>
                 <button 
                   onClick={toggleNotificationDropdown}
-                  className="relative p-2 rounded-xl bg-blue-100/50 hover:bg-blue-200/50 transition-all duration-200"
+                  className="relative p-2 rounded-xl bg-blue-100/50 hover:bg-blue-200/50 transition-all duration-200 flex items-center justify-center w-10 h-10"
                 >
                   <Bell className="w-5 h-5 text-blue-600" />
                   {unreadCount > 0 && (
@@ -271,17 +302,18 @@ const NotificationsPage: React.FC = () => {
           </div>
         </header>
 
-        <main className="flex-1 p-6 max-w-4xl mx-auto overflow-auto">
-          <div className="space-y-6">
+        <main className="flex-1 p-6 overflow-auto relative">
+          <div className="max-w-4xl mx-auto space-y-6">
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold text-blue-700">Notifications</h1>
+              {!loading && notifications.length > 0 && (
+                <div className="text-sm text-gray-500">
+                  Last updated: {lastUpdate.toLocaleTimeString()}
+                </div>
+              )}
             </div>
 
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : notifications.length === 0 ? (
+            {!loading && notifications.length === 0 ? (
               <div className="flex flex-col items-center justify-center mt-20 text-center text-gray-600">
                 <Bell className="w-16 h-16 text-blue-400 mb-4" />
                 <p className="text-lg font-medium">No notifications found</p>
@@ -297,7 +329,7 @@ const NotificationsPage: React.FC = () => {
                       !notification.read
                         ? 'bg-blue-50 border-blue-200'
                         : 'bg-white border-gray-200'
-                    }`}
+                    } hover:shadow-md`}
                   >
                     <div className="flex items-start space-x-4">
                       <div className="mt-1">
@@ -343,9 +375,10 @@ const NotificationsPage: React.FC = () => {
         </main>
       </div>
 
+      {/* Notification Modal - will appear on top of everything */}
       {selectedNotification && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transform transition-all">
             <div className="p-6 border-b border-blue-200 flex justify-between items-center">
               <h2 className="text-xl font-bold text-blue-700">Notification Details</h2>
               <button

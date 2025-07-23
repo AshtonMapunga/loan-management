@@ -15,10 +15,7 @@ import {
   CheckCircle,
   Clock,
   UserCheck,
-  Loader2,
   X,
-
- 
 } from "lucide-react";
 import UserService from "../../services/admin_Services/user_Service";
 import UserDetailsModal from "../../components/user_component/view_User";
@@ -58,6 +55,7 @@ const UserManagement = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [addUserOpen, setAddUserOpen] = useState(false);
+  const [viewLoading, setViewLoading] = useState(false); // New state for view loading
 
   // Sample notifications data
   const [notifications] = useState([
@@ -165,7 +163,7 @@ const UserManagement = () => {
       .slice(0, 2);
   };
 
-  // Calculate user stats from actual data
+  // Calculate error displays from actual data
   const userStats = [
     {
       label: "Total Users",
@@ -256,6 +254,15 @@ const UserManagement = () => {
     }
   };
 
+  const handleViewUser = async (user: User) => {
+    setViewLoading(true);
+    setSelectedUser(user);
+    // Simulate loading delay
+    setTimeout(() => {
+      setViewLoading(false);
+    }, 500);
+  };
+
   const refreshUsers = async () => {
     try {
       setLoading(true);
@@ -290,6 +297,62 @@ const UserManagement = () => {
       setLoading(false);
     }
   };
+
+  // Skeleton loader for user stats
+  const StatsSkeleton = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {[1, 2, 3, 4].map((i) => (
+        <div key={i} className="group relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/50">
+          <div className="animate-pulse space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="h-10 w-10 rounded-2xl bg-orange-100"></div>
+              <div className="h-6 w-12 rounded-full bg-orange-100"></div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 w-3/4 rounded bg-orange-100"></div>
+              <div className="h-8 w-1/2 rounded bg-orange-100"></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // Skeleton loader for table rows
+  const TableSkeleton = () => (
+    <div className="space-y-4">
+      {[1, 2, 3, 4, 5].map((row) => (
+        <div key={row} className="flex items-center justify-between p-4 bg-white/70 rounded-xl animate-pulse">
+          <div className="flex items-center space-x-3">
+            <div className="h-10 w-10 rounded-xl bg-orange-100"></div>
+            <div className="space-y-2">
+              <div className="h-4 w-32 rounded bg-orange-100"></div>
+              <div className="h-3 w-24 rounded bg-orange-100"></div>
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-4 w-24 rounded bg-orange-100"></div>
+            <div className="h-3 w-20 rounded bg-orange-100"></div>
+          </div>
+          <div className="h-6 w-20 rounded-full bg-orange-100"></div>
+          <div className="h-4 w-24 rounded bg-orange-100"></div>
+          <div className="h-4 w-12 rounded bg-orange-100"></div>
+          <div className="flex space-x-2">
+            <div className="h-8 w-8 rounded-lg bg-orange-100"></div>
+            <div className="h-8 w-8 rounded-lg bg-orange-100"></div>
+            <div className="h-8 w-8 rounded-lg bg-orange-100"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  // Skeleton loader for eye icon
+  const EyeSkeleton = () => (
+    <div className="p-2 rounded-lg bg-blue-100/70 transition-colors duration-200">
+      <div className="w-4 h-4 rounded bg-blue-200 animate-pulse"></div>
+    </div>
+  );
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50">
@@ -340,11 +403,23 @@ const UserManagement = () => {
                 className="p-2 rounded-xl bg-orange-100/50 hover:bg-orange-200/50 transition-all duration-200 group disabled:opacity-50"
                 title="Refresh Users"
               >
-                <Loader2
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
                   className={`w-5 h-5 text-orange-600 group-hover:text-orange-700 ${
                     loading ? "animate-spin" : ""
                   }`}
-                />
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
+                  <path d="M16 16h5v5" />
+                </svg>
               </button>
 
               {/* Notifications */}
@@ -587,42 +662,46 @@ const UserManagement = () => {
             </div>
           )}
 
-          {/* User Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {userStats.map((stat, index) => {
-              const IconComponent = stat.icon;
-              return (
-                <div
-                  key={index}
-                  className="group relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/50 hover:transform hover:scale-105"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent rounded-2xl"></div>
-                  <div className="relative">
-                    <div className="flex items-center justify-between mb-4">
-                      <div
-                        className={`p-3 rounded-2xl ${stat.bgColor} group-hover:scale-110 transition-transform duration-300`}
-                      >
-                        <IconComponent className="w-6 h-6 text-orange-700" />
+          {/* User Stats - Show skeleton when loading */}
+          {loading ? (
+            <StatsSkeleton />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {userStats.map((stat, index) => {
+                const IconComponent = stat.icon;
+                return (
+                  <div
+                    key={index}
+                    className="group relative bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-white/50 hover:transform hover:scale-105"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent rounded-2xl"></div>
+                    <div className="relative">
+                      <div className="flex items-center justify-between mb-4">
+                        <div
+                          className={`p-3 rounded-2xl ${stat.bgColor} group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <IconComponent className="w-6 h-6 text-orange-700" />
+                        </div>
+                        <div
+                          className={`px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${stat.color} shadow-lg`}
+                        >
+                          {stat.trend}
+                        </div>
                       </div>
-                      <div
-                        className={`px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${stat.color} shadow-lg`}
-                      >
-                        {stat.trend}
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-medium text-orange-600">
-                        {stat.label}
-                      </h3>
-                      <div className="text-3xl font-bold text-orange-800">
-                        {stat.value}
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-medium text-orange-600">
+                          {stat.label}
+                        </h3>
+                        <div className="text-3xl font-bold text-orange-800">
+                          {stat.value}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* Users Table */}
           <div className="bg-white/70 backdrop-blur-sm rounded-2xl shadow-lg border border-white/50 overflow-hidden">
@@ -631,19 +710,17 @@ const UserManagement = () => {
                 All Users
               </h3>
               <div className="text-sm text-orange-600">
-                Showing {filteredUsers.length} of {users.length} users
+                {loading ? (
+                  <div className="h-4 w-24 rounded bg-orange-100 animate-pulse"></div>
+                ) : (
+                  `Showing ${filteredUsers.length} of ${users.length} users`
+                )}
               </div>
             </div>
 
             {loading ? (
-              <div className="text-center py-12">
-                <Loader2 className="w-12 h-12 text-orange-400 mx-auto mb-4 animate-spin" />
-                <h3 className="text-lg font-semibold text-orange-700 mb-2">
-                  Loading Users...
-                </h3>
-                <p className="text-orange-600">
-                  Please wait while we fetch the user data
-                </p>
+              <div className="p-6">
+                <TableSkeleton />
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -723,13 +800,17 @@ const UserManagement = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right">
                           <div className="flex items-center justify-end space-x-2">
-                            <button
-                              className="p-2 rounded-lg bg-blue-100/70 hover:bg-blue-200/70 transition-colors duration-200 group"
-                              title="View Details"
-                              onClick={() => setSelectedUser(user)}
-                            >
-                              <Eye className="w-4 h-4 text-blue-600 group-hover:text-blue-700" />
-                            </button>
+                            {viewLoading && selectedUser?._id === user._id ? (
+                              <EyeSkeleton />
+                            ) : (
+                              <button
+                                className="p-2 rounded-lg bg-blue-100/70 hover:bg-blue-200/70 transition-colors duration-200 group"
+                                title="View Details"
+                                onClick={() => handleViewUser(user)}
+                              >
+                                <Eye className="w-4 h-4 text-blue-600 group-hover:text-blue-700" />
+                              </button>
+                            )}
                             <button
                               className="p-2 rounded-lg bg-red-100/70 hover:bg-red-200/70 transition-colors duration-200 group"
                               title="Delete User"
@@ -801,7 +882,10 @@ const UserManagement = () => {
       {/* User Details Modal */}
       <UserDetailsModal
         selectedUser={selectedUser}
-        onClose={() => setSelectedUser(null)}
+        onClose={() => {
+          setSelectedUser(null);
+          setViewLoading(false);
+        }}
       />
     </div>
   );

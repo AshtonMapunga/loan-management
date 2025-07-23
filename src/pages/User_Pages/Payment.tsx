@@ -75,7 +75,6 @@ interface TransformedLoan {
   status: string;
 }
 import NotificationBell from '../../components/Notificationsbell';
-
 const Payment = () => {
   const userName = localStorage.getItem("userName");
   const [sidebarOpen, setSidebarOpen] = useState(false);

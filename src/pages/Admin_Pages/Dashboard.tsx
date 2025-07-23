@@ -21,6 +21,7 @@ import Sidebar from "../../components/Sidebar";
 import LoanService from "../../services/admin_Services/loan_Service";
 import PaymentService from "../../services/user_Services/payment_Service";
 import UserService from "../../services/admin_Services/user_Service";
+import  { DashboardSkeleton } from "../../components/Dashboardskeleton"; 
 
 interface User {
   id: number;
@@ -451,17 +452,9 @@ const Dashboard = () => {
     return `Joined ${getTimeAgo(createdAt)}`;
   };
 
-  if (loading) {
-    return (
-      <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-          <p className="text-orange-600">Loading dashboard data...</p>
-        </div>
-      </div>
-    );
-  }
-
+   if (loading) {
+  return <DashboardSkeleton />;
+}
   if (error) {
     return (
       <div className="flex h-screen bg-gradient-to-br from-orange-50 via-red-50 to-yellow-50 items-center justify-center">
